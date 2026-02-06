@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Predictor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="text-center my-5">
+            <h1 class="display-4">🏠 House Price Predictor</h1>
+            <p class="lead">Predict house prices in Ames, Iowa using Machine Learning</p>
+            <div id="model-info" class="text-muted"></div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="row">
+            <!-- Input Form -->
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Enter House Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="prediction-form">
+                            <!-- Overall Quality -->
+                            <div class="mb-3">
+                                <label for="overallQual" class="form-label">
+                                    Overall Quality (1-10) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="overallQual"
+                                       min="1" max="10" value="7" required>
+                                <small class="form-text text-muted">Material and finish quality</small>
+                            </div>
+
+                            <!-- Living Area -->
+                            <div class="mb-3">
+                                <label for="grLivArea" class="form-label">
+                                    Living Area (sq ft) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="grLivArea"
+                                       min="1" value="1500" required>
+                            </div>
+
+                            <!-- Garage Cars -->
+                            <div class="mb-3">
+                                <label for="garageCars" class="form-label">
+                                    Garage Size (cars) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="garageCars"
+                                       min="0" max="5" value="2" required>
+                            </div>
+
+                            <!-- Garage Area -->
+                            <div class="mb-3">
+                                <label for="garageArea" class="form-label">
+                                    Garage Area (sq ft) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="garageArea"
+                                       min="0" value="500" required>
+                            </div>
+
+                            <!-- Basement Area -->
+                            <div class="mb-3">
+                                <label for="totalBsmtSF" class="form-label">
+                                    Basement Area (sq ft) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="totalBsmtSF"
+                                       min="0" value="1000" required>
+                            </div>
+
+                            <!-- First Floor -->
+                            <div class="mb-3">
+                                <label for="firstFlrSF" class="form-label">
+                                    First Floor (sq ft) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="firstFlrSF"
+                                       min="1" value="1000" required>
+                            </div>
+
+                            <!-- Second Floor -->
+                            <div class="mb-3">
+                                <label for="secondFlrSF" class="form-label">
+                                    Second Floor (sq ft)
+                                </label>
+                                <input type="number" class="form-control" id="secondFlrSF"
+                                       min="0" value="500">
+                            </div>
+
+                            <!-- Full Bathrooms -->
+                            <div class="mb-3">
+                                <label for="fullBath" class="form-label">
+                                    Full Bathrooms <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="fullBath"
+                                       min="0" max="5" value="2" required>
+                            </div>
+
+                            <!-- Total Rooms -->
+                            <div class="mb-3">
+                                <label for="totRmsAbvGrd" class="form-label">
+                                    Total Rooms Above Grade <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="totRmsAbvGrd"
+                                       min="0" value="7" required>
+                            </div>
+
+                            <!-- Year Built -->
+                            <div class="mb-3">
+                                <label for="yearBuilt" class="form-label">
+                                    Year Built <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="yearBuilt"
+                                       min="1800" max="2025" value="2000" required>
+                            </div>
+
+                            <!-- Year Remodeled -->
+                            <div class="mb-3">
+                                <label for="yearRemodAdd" class="form-label">
+                                    Year Remodeled <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="yearRemodAdd"
+                                       min="1800" max="2025" value="2000" required>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                Predict Price
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Prediction Result</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="loading" class="text-center d-none">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Predicting...</p>
+                        </div>
+
+                        <div id="result" class="d-none">
+                            <div class="alert alert-success">
+                                <h3 class="text-center mb-3">Predicted Price</h3>
+                                <h1 class="display-3 text-center text-success" id="predicted-price">
+                                    $0
+                                </h1>
+                                <hr>
+                                <div class="mt-3">
+                                    <p class="mb-1"><strong>Model Used:</strong> <span id="model-name">-</span></p>
+                                    <p class="mb-1"><strong>Confidence Range:</strong></p>
+                                    <p class="text-muted" id="confidence-range">-</p>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <h6>ℹ️ About this prediction</h6>
+                                <p class="small mb-0">
+                                    This prediction is based on historical house sales data from Ames, Iowa.
+                                    The model considers features like quality, size, and age to estimate the price.
+                                    Actual prices may vary based on market conditions.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div id="error" class="alert alert-danger d-none">
+                            <h5>Error</h5>
+                            <p id="error-message"></p>
+                        </div>
+
+                        <div id="placeholder" class="text-center text-muted">
+                            <p class="lead">Enter house details and click "Predict Price" to see the estimated value.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example Houses -->
+                <div class="card shadow mt-3">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">Try Example Houses</h6>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="loadExample('starter')">
+                            Starter Home (~$130k)
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="loadExample('average')">
+                            Average Home (~$180k)
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="loadExample('luxury')">
+                            Luxury Home (~$350k)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-5 mb-3 text-muted">
+            <p class="small">
+                Built with FastAPI + scikit-learn |
+                <a href="/docs" target="_blank">API Docs</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
