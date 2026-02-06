@@ -15,8 +15,8 @@ build/
 .ipynb_checkpoints
 *.ipynb_checkpoints/
 
-# Data files (too large for git)
-data/
+# Data files (too large for git) - but NOT src code!
+/data/
 *.csv
 
 # Large data files only (allow model files)
