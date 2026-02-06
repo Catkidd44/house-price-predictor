@@ -18,13 +18,10 @@ build/
 # Data files (too large for git)
 data/
 *.csv
-*.pkl
-*.joblib
 
-# Models (too large for git)
-models/
+# Large data files only (allow model files)
+# Models are needed for deployment
 *.h5
-*.model
 
 # IDE
 .vscode/
